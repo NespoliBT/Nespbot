@@ -1,0 +1,12 @@
+Changelog v1.8:
+
+Aggiunte:
+	1- /tictactoe per giocare a tris.
+
+>>>>Per descrizioni piu accurate usare il comando /help<<<<
+
+
+Future aggiunte nell'aggiornamento v1.9:
+	1- Cooldown personalizzato per ogni gruppo per le risposte dedicate.
+
+>>>>Si ricorda che i nomi dei gruppi e delle persone che utilizzano il bot vengono registrati per l'unico scopo di rendere l'utilizzo di @Nespbot più personale.<<<<
