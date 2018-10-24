@@ -1,2 +1,4 @@
 # Nespbot
-Testing bot for @Nespbot on telegram
+Testing per @Test_Nespbot su telegram
+
+Bot stabile: @Nespbot
