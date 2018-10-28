@@ -5,10 +5,10 @@ sys.setdefaultencoding('utf8')
 import os
 import telegram
 import telepot
-import token
+import chiave
 
 #Token del bot.
-bot = telepot.Bot(token.Token)
+bot = telepot.Bot(chiave.Token)
 
 
 #Salva, in caso non fossero gia salvati: Username, Nome, Cognome e ID del mittente nel file: 'nomi.txt'.

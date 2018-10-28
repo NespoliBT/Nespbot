@@ -10,7 +10,8 @@ import subprocess
 import random
 import os.path
 import os
-import token
+import chiave
+from orario import orario
 from scose import snomi, sgruppi, aggcom, delcom, shwcom
 from telepot.namedtuple import InlineKeyboardButton, InlineKeyboardMarkup
 from post import post
@@ -27,6 +28,8 @@ titolo=""
 s=0
 id=""
 exit = False
+sComplete = True
+
 
 ttt = [[
 		InlineKeyboardButton(text=' ', callback_data='11t'),
@@ -43,6 +46,19 @@ ttt = [[
 	]]
 
 
+def dOrario(msg, command):
+	global sComplete
+	chat_id = msg['chat']['id']
+	if command == "/orario":
+		orario().get(chat_id)
+
+	elif command[8:] == "setup":
+		sComplete = orario().setup(chat_id)
+	else:
+		orario().default(chat_id, command)
+
+    
+        
 #Dato un id trova il nome corrispondente
 def trovanome(id):
 	with open('nomi.txt','r') as nomi:
@@ -113,7 +129,7 @@ def avverti(msg, commandH):
 def accenditi(msg):
 	nome = msg['chat']['id']
 	trovato = False
-	bot.sendAudio(nome, 'CQADBAADIAQAAlJYQFJDrvmHspGYaQI')
+	#bot.sendAudio(nome, 'CQADBAADIAQAAlJYQFJDrvmHspGYaQI')
 	with open('stato.txt','r') as f:
 		for line in f:
 			l = line.split('|')
@@ -148,7 +164,7 @@ def accenditi(msg):
 def spegniti(msg):
 	nome = msg['chat']['id']
 	trovato = False
-	bot.sendAudio(nome, 'CQADBAADHwQAAlJYQFI_7rfAc1YllQI')
+	#bot.sendAudio(nome, 'CQADBAADHwQAAlJYQFI_7rfAc1YllQI')
 	with open('stato.txt','r') as f:
 		for line in f:
 			l = line.split('|')
@@ -342,11 +358,10 @@ def queryes(msg):
 #	Il controllo della presenza del messaggio, con l'ausilio di "def com", in uno dei comandi specificati da if e elif.
 def handle(msg):
 	#Variabili principali
-	global chat_idScon, command, version, msgGlobal, zitto, bpost, titolo, s
+	global chat_idScon, command, version, msgGlobal, zitto, bpost, titolo, s, sComplete
 	msgGlobal = msg
 	ran = random.random()
 	chat_id = msg['chat']['id']
-
 	#Formattazione del messaggio arrivato.
 	#Per comodità del controllo tutti i messaggi vengono duplicati in una versione tutta in minuscolo (.lower()).
 	try:
@@ -375,6 +390,10 @@ def handle(msg):
 
 	snomi(msg)	#Ogni messaggio arrivato viene, in una classe esterna a questo file, processato in modo da estrapolare da esso: Username, Nome, Cognome e ID del mittente.
 
+	if sComplete == False:
+		print sComplete
+		sComplete = orario().setup(chat_id, commandH)
+	
 	if bpost==2 and chat_id == 203240148:
 		bpost=0
 		post(titolo, commandH)
@@ -412,10 +431,6 @@ def handle(msg):
 	if msg['chat']['type'] != 'private':
 		sgruppi(msg)
 
-	#Se il messaggio contiene 'nespoli' esso viene mandato nella forma originale in chat privata a Nespoli.
-	if com('nespoli'):
-		mex(u'Hanno scritto questo su un gruppo:\n'+unicode(commandH)+u'\n\n'+unicode(msg['chat']['title'])+u'\n\n'+unicode(chat_id), '203240148', False)
-
 	if command[:7] == '/avvisa':
 		avverti(msg, commandH)
 
@@ -430,7 +445,7 @@ def handle(msg):
 
 		#Se il messaggio contiene '/start' viene presentato in breve la funzione del bot.
 		if command[:6] == '/start':
-			mex("Ciao! Io sono Nespbot, il bot di Nespoli. \nL'avresti mai detto?", chat_id)
+			mex("Ciao! Io sono Nespbot, il bot di Nespoli. \nL'avresti mai detto?\n\nComandi: /help", chat_id)
 
 		#Cancella il messaggio a cui si risponde
 		elif command[:6] == ('/zitto'):
@@ -440,6 +455,9 @@ def handle(msg):
 		elif command == 'nespo pinna' and msg['reply_to_message'] != '':
 			pinna(msg)
 
+		elif command[:7] == ('/orario'):
+			dOrario(msg, command)
+        
 		#Se il messaggio equivale a '/aggcom' vengono inviati dei messaggi esplicativi del comando.
 		elif command == ('/aggcom') or command == ('/aggcom@nespbot'):
 			mex('Il comando /aggcom si utilizza così:', chat_id)
@@ -473,8 +491,20 @@ def handle(msg):
 				delcom(commandH, msg)
 			else:
 				mex('Comando non utilizzabile nelle chat private', chat_id)
-
-		#Se il messaggio equivale a '/test' vengono inviati alla chat tutti i contenuti del messaggio.
+				
+						#Se il messaggio equivale a '/tebile nelle chat private', chat_id)
+						
+								#Se il messaggio equivale a '/tebile nelle chat private', chat_id)
+								
+										#Se il messaggio equivale a '/tebile nelle chat private', chat_id)
+										
+												#Se il messaggio equivale a '/tebile nelle chat private', chat_id)
+												
+														#Se il messaggio equivale a '/tebile nelle chat private', chat_id)
+														
+																#Se il messaggio equivale a '/tebile nelle chat private', chat_id)
+																
+																		#Se il messaggio equivale a '/test' vengono inviati alla chat tutti i contenuti del messaggio.
 		elif command[:5] == '/test':
 			mex(msg, chat_id)
 
@@ -493,9 +523,7 @@ def handle(msg):
 
 		#Se il meesaggio equivale a '/download' viene inviato il codice del bot.
 		elif command[:9] == '/download':
-			mex('Nespbot è il file principale mentre scose è il file contenente alcune funzioni esterne', chat_id)
-			bot.sendDocument(chat_id, open('Nespbot.py'))
-			bot.sendDocument(chat_id, open('scose.py'))
+			mex('https://github.com/NespoliBT/Nespbot', chat_id)
 
 
 		#Se il messaggio equivale a '/help' viene inviata una lista dei comandi nella versione attuale
@@ -507,7 +535,7 @@ def handle(msg):
 			mex(cmd, chat_id, False)
 
 		#Se il messaggio contiene '/r8' in bot invierà, in risposta al messaggi a cui il mittente ha risposto o, in alternativa, al messaggi stesso, un numero che va da 3 a 10.
-		elif com('/r8'):
+		elif com('/r8'): 
 			ran = random.randrange(30,100,1)
 			try:
 				reply_to_message = msg['reply_to_message']['message_id']
@@ -532,7 +560,7 @@ def handle(msg):
 
 
 #Token del bot.
-bot = telepot.Bot(token.Token)
+bot = telepot.Bot(chiave.Token)
 
 #Istruzione richiamante 'handle' per i messaggi e 'queryes' per le query
 MessageLoop(bot, {'chat': handle,
