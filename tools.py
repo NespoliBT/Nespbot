@@ -1,7 +1,4 @@
-# encoding=utf-8
-import sys
-reload(sys)
-sys.setdefaultencoding("utf-8")
+# -*- coding: utf-8 -*-
 import chiave
 import telepot
 
@@ -11,3 +8,8 @@ bot = telepot.Bot(chiave.Token)
 class mex:
 	def __init__(self, text, pID):
 		bot.sendMessage(pID, text)
+
+		
+class frw:
+	def __init__(self, gID, pID, mID):
+		bot.forwardMessage(gID, pID,  mID)

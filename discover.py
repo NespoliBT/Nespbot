@@ -1,7 +1,4 @@
-# encoding=utf-8
-import sys
-reload(sys)
-sys.setdefaultencoding('utf-8')
+# -*- coding: utf-8 -*-
 
 #classe utile a ricavare le informazioni necessarie al consumo dei dati da "msg".
 #questa classe ha anche il compito di registrare username, nome, cognome e pID del mittente per futuro uso
@@ -9,6 +6,7 @@ class discover:
 	def __init__(self, msg):
 		pID = msg["from"]["id"] 							#pID del mittente
 
+		gID = msg["chat"]["id"]								#ID del gruppo
 		
 		try:
 			capitalCommand = msg["text"]					#testo del messaggio
@@ -17,7 +15,7 @@ class discover:
 				capitalCommand = msg["caption"]				#testo del messaggio in caso sia un contenuto multimediale con descrizione
 			except:
 				capitalCommand = "Contenuto Multimediale"	#defualt in caso sia un contenuto multimediale senza descrizione
-		command=capitalCommand.lower()						#testo del messaggio ma tutto minuscolo
+		command = capitalCommand.lower()					#testo del messaggio ma tutto minuscolo
 		
 		try:
 			username = msg["from"]["username"]				#username dell'utente
@@ -44,7 +42,7 @@ class discover:
 		#fase di registrazione di username, nome, cognome e pID
 		#il file "nomi.txt" nella directory "resources" viene aperto con capacità di lettura e scrittura
 		#ogni linea di questo file è scritta in questo modo: @<username> | <nome> | <cognome> : <pID> 
-		with open("resources/nomi.txt", "a+r") as nomi:
+		with open("resources/nomi.txt","r+") as nomi:
 		
 			brk=False					#identificatore di break: True-> una corrispondenza è stata trovata. False -> nessuna corrispondenza trovata.
 			for line in nomi:
@@ -56,20 +54,25 @@ class discover:
 					break				#il ciclo si ferma
 						
 			if not brk:					#se il ciclo non ha trovato nessuna corrispondenza i dati dell'utente vengono registrati
-				nomi.write("@"+username+" | "+unicode(nome)+" | "+unicode(cognome)+" : "+unicode(pID)+"\n")
+				nomi.write("@"+username+" | "+nome+" | "+cognome+" : "+str(pID)+"\n")
 			nomi.close()
-
+		
 		#a ognuna di queste variabili globali alla classe viene assegrato uno dei dati dell'utente
 		self.pID = str(pID)						#pID dell'utente sotto forma di stringa
+		self.gID = str(gID)						#ID del gruppo sotto forma di stringa
 		self.command = command					#comando tutto minuscolo
 		self.capitalCommand = capitalCommand	#comando
 		self.username = username				#username dell'utente
 		self.private = private					#identificatore del tipo di chat
 		self.strprivate = strprivate			#identificatore del tipo di chat in stringa
 
+		#TODO salvare gruppi
+		#with open("resources/gruppi.txt","a+r") as gruppi:
+
+		
 	#quanto viene richiamata la funzione get di questa classe essa restituisce i dati ricavati dal messaggio
 	def get(self):
-		return self.pID, self.command, self.capitalCommand, self.username, self.private, self.strprivate
+		return self.pID, self.gID, self.command, self.capitalCommand, self.username, self.private, self.strprivate
 
 #dato il pID dell'utente questa classe ricava le seguenti informazioni:
 #	username, nome, cognome
